@@ -20,17 +20,19 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="465*"/>
+            <ColumnDefinition Width="239*"/>
         </Grid.ColumnDefinitions>
 
         <ui:Button
-            Grid.Column="0"
             Command="{Binding ViewModel.CounterIncrementCommand, Mode=OneWay}"
-            Content="Click me!"
-            Icon="Fluent24" />
+            Content=" Click me!"
+            Icon="Fluent24" HorizontalAlignment="Center" />
         <TextBlock
-            Grid.Column="1"
-            Margin="12,0,0,0"
+            Grid.Column="2"
+            Margin="0,0,0,0"
             VerticalAlignment="Center"
-            Text="{Binding ViewModel.Counter, Mode=OneWay}" />
+            FontSize="64"
+            Text="{Binding ViewModel.Duration, Mode=OneWay}" />
     </Grid>
 </Page>
