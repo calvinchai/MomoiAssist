@@ -1,9 +1,11 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Diagnostics;
+using MomoiAssist.Properties;
 
-namespace MomoiAssist.ViewModels.Pages {
-    public partial class DashboardViewModel : ObservableObject {
-
+namespace MomoiAssist.ViewModels.Pages
+{
+    public partial class DashboardViewModel : ObservableObject
+    {
         [ObservableProperty]
         private string _duration = "Duration";
 

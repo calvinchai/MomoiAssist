@@ -1,4 +1,8 @@
 ﻿using MomoiAssist.ViewModels.Pages;
+using System.Diagnostics;
+using System.Globalization;
+using System.Reflection.Metadata;
+using System.Windows.Controls;
 using Wpf.Ui.Controls;
 
 namespace MomoiAssist.Views.Pages
@@ -14,5 +18,7 @@ namespace MomoiAssist.Views.Pages
 
             InitializeComponent();
         }
+
+    
     }
 }

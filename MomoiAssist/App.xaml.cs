@@ -30,6 +30,7 @@ namespace MomoiAssist
             {
                 services.AddHostedService<ApplicationHostService>();
 
+                services.AddSingleton<LocalizationService>();
                 // Page resolver service
                 services.AddSingleton<IPageService, PageService>();
 
@@ -70,6 +71,7 @@ namespace MomoiAssist
         /// </summary>
         private void OnStartup(object sender, StartupEventArgs e)
         {
+            GetService<LocalizationService>();
             _host.Start();
         }
 

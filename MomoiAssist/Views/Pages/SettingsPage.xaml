@@ -7,6 +7,8 @@
     xmlns:local="clr-namespace:MomoiAssist.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:pages="clr-namespace:MomoiAssist.ViewModels.Pages"
+    xmlns:tkcontrols="using:CommunityToolkit.WinUI.Controls"
     Title="SettingsPage"
     d:DataContext="{d:DesignInstance local:SettingsPage,
                                      IsDesignTimeCreatable=False}"
@@ -14,8 +16,13 @@
     d:DesignWidth="800"
     ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
     ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    xmlns:lex="http://wpflocalizeextension.codeplex.com"
+    lex:LocalizeDictionary.DesignCulture="en"
+    lex:ResxLocalizationProvider.DefaultAssembly="MomoiAssist"
+    lex:ResxLocalizationProvider.DefaultDictionary="Strings">
     <Page.Resources>
         <helpers:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
     </Page.Resources>
@@ -25,7 +32,72 @@
             FontSize="20"
             FontWeight="Medium"
             Text="Personalization" />
-        <TextBlock Margin="0,12,0,0" Text="Theme" />
+        <ui:TextBlock
+            Margin="0,0,0,8"
+            FontTypography="BodyStrong"
+            Text="Appearance &amp; behavior" />
+       
+        <ui:CardControl Margin="0,0,0,12" Icon="{ui:SymbolIcon LocalLanguage24}">
+            <ui:CardControl.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ui:TextBlock
+                        
+                        FontTypography="Body"
+                        Text= "{lex:Loc Language}"/>
+                </Grid>
+            </ui:CardControl.Header>
+            <ComboBox
+                Grid.Column="1"
+                MinWidth="200"
+                SelectedValuePath="Tag"
+                SelectedValue="{Binding ViewModel.UserLanguage, Mode=TwoWay}"
+                IsSynchronizedWithCurrentItem="True"
+                >
+                <ComboBoxItem Tag="zh-CN" Content="{lex:Loc SimplifiedChinese}"/>
+                <ComboBoxItem Tag="ja-JP" Content="{lex:Loc Japanese}" />
+                <ComboBoxItem Tag="en" Content="{lex:Loc English}" />
+            </ComboBox>
+            
+        </ui:CardControl>
+
+        <ui:CardControl Margin="0,0,0,12" Icon="{ui:SymbolIcon Color24}">
+            <ui:CardControl.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ui:TextBlock
+                FontTypography="Body"
+                Text= "{lex:Loc Theme}"/>
+                </Grid>
+            </ui:CardControl.Header>
+            <ComboBox ItemsSource="{Binding ViewModel.Themes}"
+                  Grid.Column="1"
+                    MinWidth="200"
+                      SelectedValuePath="Tag"
+                    SelectedIndex="{Binding ViewModel.CurrentTheme, Mode=TwoWay}"
+                    IsSynchronizedWithCurrentItem="True">   
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{lex:Loc {Binding}}" Tag="{Binding}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        </ui:CardControl>
+        
+        <!--
+        SelectedValue="{Binding CurrentStatus}"  
+        SelectionChanged="ChangeUserLanguage"-->
+        <Button Content="{lex:Loc Test}" />
+        
+        <ui:Button Command="{Binding ViewModel.ChangeLanguageCommand, Mode=OneWay}" Content="Change Language" />
+
+        <!--<TextBlock Margin="0,12,0,0" Text="Theme" />
         <RadioButton
             Margin="0,12,0,0"
             Command="{Binding ViewModel.ChangeThemeCommand, Mode=OneWay}"
@@ -40,12 +112,12 @@
             Content="Dark"
             GroupName="themeSelect"
             IsChecked="{Binding ViewModel.CurrentTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Dark, Mode=OneWay}" />
-
+           -->
         <TextBlock
             Margin="0,24,0,0"
             FontSize="20"
             FontWeight="Medium"
-            Text="About MomoiAssist" />
+            Text="About" />
         <TextBlock Margin="0,12,0,0" Text="{Binding ViewModel.AppVersion, Mode=OneWay}" />
     </StackPanel>
 </Page>
