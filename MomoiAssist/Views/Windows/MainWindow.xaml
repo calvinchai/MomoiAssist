@@ -35,9 +35,9 @@
         </Grid.RowDefinitions>
         <!--<MenuItemsSource="{Binding ViewModel.MenuItems, Mode=OneWay
         FooterMenuItemsSource="{Binding ViewModel.FooterMenuItems, Mode=OneWay}"
-FrameMargin="0"
-IsBackButtonVisible="Visible"
-IsPaneToggleVisible="True"}"-->
+        FrameMargin="0"
+        IsBackButtonVisible="Visible"
+        IsPaneToggleVisible="True"}"-->
         <ui:NavigationView
             x:Name="RootNavigation"
             Grid.Row="1"
@@ -46,9 +46,9 @@ IsPaneToggleVisible="True"}"-->
             
             
             PaneDisplayMode="Bottom">
-            <ui:NavigationView.Header>
+            <!-- <ui:NavigationView.Header>
                 <ui:BreadcrumbBar x:Name="BreadcrumbBar" Margin="42,32,42,20" />
-            </ui:NavigationView.Header>
+            </ui:NavigationView.Header> -->
             <ui:NavigationView.ContentOverlay>
                 <Grid>
                     <ui:SnackbarPresenter x:Name="SnackbarPresenter" />

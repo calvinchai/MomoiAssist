@@ -12,7 +12,8 @@ namespace MomoiAssist.Views.Windows
         public MainWindow(
             MainWindowViewModel viewModel,
             IPageService pageService,
-            INavigationService navigationService
+            INavigationService navigationService,
+            ISnackbarService snackbarService
         )
         {
             ViewModel = viewModel;

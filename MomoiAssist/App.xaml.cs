@@ -10,6 +10,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Threading;
 using Wpf.Ui;
+using Wpf.Ui.Controls;
 
 namespace MomoiAssist
 {
@@ -31,6 +32,9 @@ namespace MomoiAssist
                 services.AddHostedService<ApplicationHostService>();
 
                 services.AddSingleton<LocalizationService>();
+                services.AddSingleton<WindowFinderService>();
+
+                services.AddSingleton<ISnackbarService, SnackbarService>();
                 // Page resolver service
                 services.AddSingleton<IPageService, PageService>();
 
@@ -71,8 +75,9 @@ namespace MomoiAssist
         /// </summary>
         private void OnStartup(object sender, StartupEventArgs e)
         {
-            GetService<LocalizationService>();
+            
             _host.Start();
+            GetService<LocalizationService>();
         }
 
         /// <summary>

@@ -14,25 +14,57 @@
     ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
     ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    xmlns:models="clr-namespace:MomoiAssist.Models"
+    xmlns:fa="http://schemas.fontawesome.io/icons/"
     mc:Ignorable="d">
 
     <Grid VerticalAlignment="Top">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="465*"/>
-            <ColumnDefinition Width="239*"/>
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <!--<ui:ProgressRing IsIndeterminate="True"/>-->
 
-        <ui:Button
-            Command="{Binding ViewModel.CounterIncrementCommand, Mode=OneWay}"
-            Content=" Click me!"
-            Icon="Fluent24" HorizontalAlignment="Center" />
-        <TextBlock
-            Grid.Column="2"
-            Margin="0,0,0,0"
-            VerticalAlignment="Center"
-            FontSize="64"
-            Text="{Binding ViewModel.Duration, Mode=OneWay}" />
+        <ui:InfoBar Title="Loading" Message="Essential message." IsClosable="False" IsOpen="True" Severity="Warning" Grid.Row="0"/>
+        <ProgressBar IsIndeterminate="True" Grid.Row="1"/>
+
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <ui:Button Command="{Binding ViewModel.CounterIncrementCommand, Mode=OneWay}"
+   Content=" Click me!" Icon="Fluent24" HorizontalAlignment="Center" Grid.Row="0"/>
+
+            <!--<ListBox ItemsSource="{Binding ViewModel.AllWindows, Mode=OneTime }"/>-->
+
+            <ListView ItemsSource="{Binding ViewModel.EmulatorWindows}" Grid.Row="1">
+                <ListView.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:EmulatorWindow}">
+                        <Image Source="{Binding Screenshot, Mode=OneWay}" Width="200" Height="100"/>
+                        <!--<TextBlock Text="{Binding Title}" />-->
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+        
+        <!-- <TextBlock
+		Grid.Column="2"
+		Margin="0,0,0,0"
+		VerticalAlignment="Center"
+		FontSize="64"
+		Text="{Binding ViewModel.Duration, Mode=OneWay}" /> -->
+        <!-- <fa:ImageAwesome Icon="Refresh" Spin="True" Height="24" Width="24" /> -->
+
+
+
+        <!-- 
+       
+       -->
+
+
     </Grid>
 </Page>
