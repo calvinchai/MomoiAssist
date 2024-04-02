@@ -30,7 +30,7 @@
         <ui:InfoBar Title="Loading" Message="Essential message." IsClosable="False" IsOpen="True" Severity="Warning" Grid.Row="0"/>
         <ProgressBar IsIndeterminate="True" Grid.Row="1"/>
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -40,31 +40,38 @@
    Content=" Click me!" Icon="Fluent24" HorizontalAlignment="Center" Grid.Row="0"/>
 
             <!--<ListBox ItemsSource="{Binding ViewModel.AllWindows, Mode=OneTime }"/>-->
+            <ui:Image Source="{Binding ViewModel.Screenshot}" Grid.Row="1"></ui:Image>
+            
 
-            <ListView ItemsSource="{Binding ViewModel.EmulatorWindows}" Grid.Row="1">
-                <ListView.ItemTemplate>
+            <!--<ui:VirtualizingItemsControl
+    ItemsSource="{Binding ViewModel.EmulatorWindows}"
+    VirtualizingPanel.CacheLengthUnit="Item" Grid.Row="2">
+                <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type models:EmulatorWindow}">
-                        <Image Source="{Binding Screenshot, Mode=OneWay}" Width="200" Height="100"/>
-                        <!--<TextBlock Text="{Binding Title}" />-->
+                        <ui:Image Source="{Binding ScreenshotImage}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ui:VirtualizingItemsControl>-->
+
+            <!--<ListView ItemsSource="{Binding ViewModel.EmulatorWindows}" Grid.Row="2">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch">
+                            <ui:Image Source="{Binding ScreenshotImage}" Height="100" Width="100" />
+                            <ui:Button
+Appearance="Secondary"
+FontSize="25"
+Content="{Binding Title}"
+Icon="Fluent24" />
+                        </StackPanel>
+
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </ListView>-->
+
+
         </Grid>
         
-        <!-- <TextBlock
-		Grid.Column="2"
-		Margin="0,0,0,0"
-		VerticalAlignment="Center"
-		FontSize="64"
-		Text="{Binding ViewModel.Duration, Mode=OneWay}" /> -->
-        <!-- <fa:ImageAwesome Icon="Refresh" Spin="True" Height="24" Width="24" /> -->
-
-
-
-        <!-- 
-       
-       -->
-
 
     </Grid>
 </Page>

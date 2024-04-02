@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace MomoiAssist.Services
 {
@@ -15,13 +16,42 @@ namespace MomoiAssist.Services
         public WindowFinderService(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
+            StartWindowUpdateTimer();
         }
-        
-        private readonly List<string> possibleEmulatorNames = new List<string> {"MuMu Player 12", "ChatGPT"};
 
-        private EmulatorWindow emulatorWindow = null;
+        private EmulatorWindow? emulatorWindow = null;
 
-        // list 3 possible emulator window at most  
+        public void ClearEmulatorWindow()
+        {
+            emulatorWindow = null;
+        }
+
+        private DispatcherTimer windowUpdateTimer = new DispatcherTimer();
+
+        private void StartWindowUpdateTimer()
+        {
+            windowUpdateTimer.Interval = TimeSpan.FromSeconds(1); // update every 5 seconds
+            windowUpdateTimer.Tick += UpdateWindow;
+            windowUpdateTimer.Start();
+
+        }
+        public void UpdateWindow(object sender, EventArgs e)
+        {
+            if (emulatorWindow != null)
+            {
+                return;
+            }
+            emulatorWindow = GetPossibleEmulatorWindows().FirstOrDefault();
+            if (emulatorWindow != null)
+            {
+                emulatorWindow.UpdateScreenshot();
+            }
+        }
+
+        private readonly List<string> possibleEmulatorNames = new List<string> {"MuMu Player 12", "MuMu"};
+
+
+        // list 3 possible emulator window at most
         // first one is the one we selected by default 
         public List<EmulatorWindow> GetPossibleEmulatorWindows()
         {
@@ -67,5 +97,9 @@ namespace MomoiAssist.Services
         {
             emulatorWindow = new EmulatorWindow(EmulatorWindowHelper.GetWindowName(handle), handle);
         }
+
+        public EmulatorWindow? CurrentWindow => emulatorWindow;
+
+
     }
 }

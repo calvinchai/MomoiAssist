@@ -77,7 +77,6 @@ namespace MomoiAssist
         {
             
             _host.Start();
-            GetService<LocalizationService>();
         }
 
         /// <summary>

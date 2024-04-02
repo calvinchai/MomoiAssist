@@ -1,4 +1,5 @@
-﻿using MomoiAssist.ViewModels.Windows;
+﻿using MomoiAssist.Services;
+using MomoiAssist.ViewModels.Windows;
 using Wpf.Ui;
 using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
@@ -13,7 +14,7 @@ namespace MomoiAssist.Views.Windows
             MainWindowViewModel viewModel,
             IPageService pageService,
             INavigationService navigationService,
-            ISnackbarService snackbarService
+            LocalizationService localizationService
         )
         {
             ViewModel = viewModel;
