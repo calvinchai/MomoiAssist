@@ -44,7 +44,7 @@ namespace MomoiAssist.Services
             emulatorWindow = GetPossibleEmulatorWindows().FirstOrDefault();
             if (emulatorWindow != null)
             {
-                emulatorWindow.UpdateScreenshot();
+                //emulatorWindow.UpdateScreenshot();
             }
         }
 
@@ -61,7 +61,7 @@ namespace MomoiAssist.Services
                 if (possibleEmulatorNames.Contains(EmulatorWindowHelper.GetWindowName(hWnd)))
                 {
                     emulatorWindow = new EmulatorWindow(EmulatorWindowHelper.GetWindowName(hWnd), hWnd);
-                    emulatorWindow.UpdateScreenshot();
+                    //emulatorWindow.UpdateScreenshot();
                     emulatorWindows.Add(emulatorWindow);
                 }
                 if (emulatorWindows.Count >= 3)
@@ -83,7 +83,7 @@ namespace MomoiAssist.Services
             }
             if (emulatorWindow != null)
             {
-                emulatorWindow.UpdateScreenshot();
+                //emulatorWindow.UpdateScreenshot();
             }
             return emulatorWindow;
         }

@@ -8,6 +8,8 @@ using MomoiAssist.Models;
 using System.IO;
 using System.Windows.Media.Media3D;
 using System.Windows;
+using System.Security.Permissions;
+using System.Reflection.Metadata;
 
 namespace MomoiAssist.Helpers
 {
@@ -21,6 +23,14 @@ namespace MomoiAssist.Helpers
         public int Height => Bottom - Top;
         public int X => Left;
         public int Y => Top;
+        public Rectangle ToRectangle() => Rectangle.FromLTRB((int)Left, (int)Top, (int)Right, (int)Bottom);
+        public Rectangle ToRectangleOffset(POINT p) => Rectangle.FromLTRB((int)Left + p.x, (int)Top + p.y, (int)Right + p.x, (int)Bottom);
+    }
+
+    public struct POINT
+    {
+        public int x;
+        public int y;
     }
 
     public class EmulatorWindowHelper
@@ -50,6 +60,11 @@ namespace MomoiAssist.Helpers
         [DllImport("user32.dll")]
         public static extern bool PrintWindow(IntPtr hWnd, IntPtr hdcBlt, int nFlags);
 
+        [DllImport("user32.dll")]
+        public static extern bool ClientToScreen(IntPtr hWnd, out POINT point);
+
+
+       
         [DllImport("user32.dll")]
         private static extern IntPtr SetWinEventHook(
         uint eventMin,
@@ -130,9 +145,10 @@ namespace MomoiAssist.Helpers
 
         public static Bitmap CaptureWindowPrintWindow(IntPtr hWnd)
         {
-            GetWindowRect(hWnd, out RECT rc);
-            
-            Console.WriteLine("Screen Capture with PrintWindow: " + rc.Left + " " + rc.Top + " " + rc.Width + " " + rc.Height);
+            GetWindowRect(hWnd, out RECT RC);
+            var rc = RC.ToRectangle();
+            Console.WriteLine("Screen Capture with PrintWindow: " + rc.Left + " " + rc.Top + " " +rc.Right + " " + rc.Bottom);
+            Console.WriteLine("Width: " + rc.Width + " Height: " + rc.Height);
             Bitmap bmp = new Bitmap(rc.Width, rc.Height, PixelFormat.Format24bppRgb);
             Graphics gfxBmp = Graphics.FromImage(bmp);
             IntPtr hdcBitmap = gfxBmp.GetHdc();
@@ -147,12 +163,20 @@ namespace MomoiAssist.Helpers
 
         public static Bitmap CaptureWindowGDI(IntPtr hWnd)
         {
-            GetWindowRect(hWnd, out RECT rc);
+            GetWindowRect(hWnd, out RECT RC);
+            Console.WriteLine("Screen Capture: " + RC.Left + " " + RC.Top + " " + RC.Right + " " + RC.Bottom);
+            Console.WriteLine(RC.Width + " " + RC.Height);
+            ClientToScreen(hWnd, out POINT point);
+            var rc = RC;
             int Width = rc.Width;
             int Height = rc.Height;
-
+            int titleBarHeight = (int)System.Windows.SystemParameters.CaptionHeight;
+            Height -= rc.Top - point.y;
+            
             IntPtr windowDC = GetWindowDC(hWnd);
             Console.WriteLine("Screen Capture with GDI: " + rc.Left + " " + rc.Top + " " + Width + " " + Height);
+            Console.WriteLine("Boarder: " + (rc.Left-point.x) + " " + (rc.Top-point.y));
+
             if (Width <= 0 || Height <= 0)
             {
 
@@ -172,21 +196,21 @@ namespace MomoiAssist.Helpers
             return screenshot;
         }
 
-        public static Bitmap CaptureWindowCopyScreen(IntPtr hWnd)
-        {
-            GetWindowRect(hWnd, out RECT rc);
+        //public static Bitmap CaptureWindowCopyScreen(IntPtr hWnd)
+        //{
+        //    GetWindowRect(hWnd, out RECT rc);
 
-            Console.WriteLine("Screen Capture with CopyFromScreen: " + rc.Top + " " + rc.Left + " " + rc.Width + " " + rc.Height);
-            Bitmap bitmap = new Bitmap(rc.Width, rc.Height);
-            Graphics g = Graphics.FromImage(bitmap);
+        //    Console.WriteLine("Screen Capture with CopyFromScreen: " + rc.Top + " " + rc.Left + " " + rc.Width + " " + rc.Height);
+        //    Bitmap bitmap = new Bitmap(rc.Width, rc.Height);
+        //    Graphics g = Graphics.FromImage(bitmap);
 
-            g.CopyFromScreen(rc.X, rc.Y, 0, 0, new System.Drawing.Size(rc.Width, rc.Height));
+        //    g.CopyFromScreen(rc.X, rc.Y, 0, 0, new System.Drawing.Size(rc.Width, rc.Height));
 
-            //MemoryStream memoryStream = new MemoryStream();
-            //bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
+        //    //MemoryStream memoryStream = new MemoryStream();
+        //    //bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
 
-            return bitmap;
-        }
+        //    return bitmap;
+        //}
         
 
     }

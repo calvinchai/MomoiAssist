@@ -41,7 +41,6 @@
 
             <!--<ListBox ItemsSource="{Binding ViewModel.AllWindows, Mode=OneTime }"/>-->
             <ui:Image Source="{Binding ViewModel.Screenshot}" Grid.Row="1"></ui:Image>
-            
 
             <!--<ui:VirtualizingItemsControl
     ItemsSource="{Binding ViewModel.EmulatorWindows}"

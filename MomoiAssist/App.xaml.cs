@@ -51,6 +51,10 @@ namespace MomoiAssist
                 services.AddSingleton<INavigationWindow, MainWindow>();
                 services.AddSingleton<MainWindowViewModel>();
 
+                services.AddSingleton<MonitorWindow>();
+                services.AddSingleton<MonitorWindowViewModel>();
+
+
                 services.AddSingleton<DashboardPage>();
                 services.AddSingleton<DashboardViewModel>();
                 services.AddSingleton<DataPage>();
@@ -77,6 +81,10 @@ namespace MomoiAssist
         {
             
             _host.Start();
+            Overlay overlay = new Overlay();
+            overlay.Show();
+            GetService<MonitorWindow>().Show();
+
         }
 
         /// <summary>

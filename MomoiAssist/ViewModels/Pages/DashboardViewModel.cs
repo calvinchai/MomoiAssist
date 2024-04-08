@@ -32,6 +32,7 @@ namespace MomoiAssist.ViewModels.Pages
             Task.Run(StartOverlay);
 
         }
+
         void StartOverlay()
         {
             using (var example = new Example(currentWindow.Handle))

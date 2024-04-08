@@ -29,12 +29,19 @@ namespace MomoiAssist.Models
             Title = title;
             Handle = handle;
             StartScreenshotUpdateTimer();
+            //Task.Run(() =>
+            //{
+            //    while (true)
+            //    {
+            //        UpdateScreenshot();
+            //    }
+            //});
         }
         private DispatcherTimer screenshotUpdateTimer = new DispatcherTimer();
 
         private void StartScreenshotUpdateTimer()
         {
-            screenshotUpdateTimer.Interval = TimeSpan.FromSeconds(0.1); 
+            screenshotUpdateTimer.Interval = TimeSpan.FromSeconds(1/30); 
             screenshotUpdateTimer.Tick += UpdateScreenshot;
             screenshotUpdateTimer.Start();
 
@@ -45,23 +52,38 @@ namespace MomoiAssist.Models
         }
         public void UpdateScreenshot()
         {
-            Screenshot = EmulatorWindowHelper.CaptureWindowCopyScreen(Handle);
+            Screenshot = EmulatorWindowHelper.CaptureWindowGDI(Handle);
             //if (Screenshot != null)
             //{
             //    Screenshot.Save(Title+".png", System.Drawing.Imaging.ImageFormat.Png);
 
             //}
             UpdateScreenshotImage();
+            if (lastTime == 0)
+            {
+                lastTime = Environment.TickCount;
+            }
+            else
+            {
+                int currentTime = Environment.TickCount;
+                if (currentTime - lastTime == 0)
+                {
+                    return;
+                }
+                Console.WriteLine("FPS: " + 1000 / (currentTime - lastTime));
+                lastTime = currentTime;
+            }
         }
 
-
+        int lastTime = 0;
         public void UpdateScreenshotImage()
         {
             ScreenshotImage = BitmapToImageSource(Screenshot);
+            
         }
 
 
-        BitmapImage? BitmapToImageSource(Bitmap? bitmap)
+        public static BitmapImage? BitmapToImageSource(Bitmap? bitmap)
         {
             if (bitmap == null)
             {
@@ -77,7 +99,7 @@ namespace MomoiAssist.Models
                 bitmapimage.StreamSource = memory;
                 bitmapimage.CacheOption = BitmapCacheOption.OnLoad;
                 bitmapimage.EndInit();
-
+                bitmapimage.Freeze();
                 return bitmapimage;
             }
         }
