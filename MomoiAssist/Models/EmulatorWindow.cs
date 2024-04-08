@@ -29,6 +29,7 @@ namespace MomoiAssist.Models
             Title = title;
             Handle = handle;
             StartScreenshotUpdateTimer();
+            StartRectUpdateTimer();
             //Task.Run(() =>
             //{
             //    while (true)
@@ -38,6 +39,7 @@ namespace MomoiAssist.Models
             //});
         }
         private DispatcherTimer screenshotUpdateTimer = new DispatcherTimer();
+        private DispatcherTimer rectUpdateTimer = new DispatcherTimer();
 
         private void StartScreenshotUpdateTimer()
         {
@@ -46,6 +48,17 @@ namespace MomoiAssist.Models
             screenshotUpdateTimer.Start();
 
         }
+        private void StartRectUpdateTimer()
+        {
+            rectUpdateTimer.Tick += UpdateRect;
+            rectUpdateTimer.Start();
+        }
+        void UpdateRect(object sender, EventArgs e)
+        {
+            Rect = EmulatorWindowHelper.GetWindowRect(Handle);
+        }
+
+
         public void UpdateScreenshot(object sender, EventArgs e)
         {
             UpdateScreenshot();

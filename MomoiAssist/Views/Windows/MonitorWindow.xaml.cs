@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Wpf.Ui;
 using MomoiAssist;
+using System.Windows.Threading;
 
 namespace MomoiAssist.Views.Windows
 {
@@ -29,6 +30,26 @@ namespace MomoiAssist.Views.Windows
             ViewModel = monitorWindowViewModel;
             DataContext = this;
             InitializeComponent();
+            StartImageUpdateTimer();
+
+        }
+        private DispatcherTimer timer;
+
+        private void StartImageUpdateTimer()
+        {
+            timer = new DispatcherTimer();
+            //timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += UpdateWindow;
+            timer.Start();
+        }
+
+        private void UpdateWindow(object sender, EventArgs e)
+        {
+
+            Top = ViewModel.Top;
+            Left = ViewModel.Left;
+
+            Topmost = true;
         }
     }
 }

@@ -25,6 +25,10 @@ namespace MomoiAssist.ViewModels.Windows
             _windowFinderService = windowFinderService;
             StartImageUpdateTimer();
         }
+        [ObservableProperty]
+        public int top;
+        [ObservableProperty]
+        public int left;
 
         private DispatcherTimer timer;
 
@@ -55,6 +59,9 @@ namespace MomoiAssist.ViewModels.Windows
             {
                 //Screenshot = EmulatorWindow.BitmapToImageSource((System.Drawing.Bitmap?)currentWindow.Screenshot);
                 Screenshot = currentWindow.ScreenshotImage;
+                top = currentWindow.Rect.Top;
+                left = currentWindow.Rect.Left;
+
                 //Screenshot = null;
             }
 
