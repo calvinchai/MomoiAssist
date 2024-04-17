@@ -51,7 +51,7 @@ namespace MomoiAssist.Services
                 GetWindowThreadProcessId(emulatorWindow.Handle, out int processId);
                 winEventHook2 = SetWinEventHook(
                     (uint)WinEvent.EVENT_OBJECT_LOCATIONCHANGE, (uint)WinEvent.EVENT_OBJECT_LOCATIONCHANGE, IntPtr.Zero, winEventProc, (uint)processId, 0, 0);
-                emulatorWindow.UpdateRect(null, null);
+                emulatorWindow.UpdateRect();
                 masterOverlay.Top = emulatorWindow.WindowRect.Top;
                 masterOverlay.Left = emulatorWindow.WindowRect.Left;
                 masterOverlay.Width = emulatorWindow.WindowRect.Right - emulatorWindow.WindowRect.Left;
@@ -60,7 +60,7 @@ namespace MomoiAssist.Services
             }
             else
             {
-                emulatorWindow.UpdateRect(null, null);
+                emulatorWindow.UpdateRect();
                 masterOverlay.Top = emulatorWindow.WindowRect.Top;
                 masterOverlay.Left = emulatorWindow.WindowRect.Left;
                 masterOverlay.Width = emulatorWindow.WindowRect.Right - emulatorWindow.WindowRect.Left;
@@ -100,12 +100,12 @@ namespace MomoiAssist.Services
             masterOverlay = new MasterOverlay();
 
             WindowHelper.SetToolWindow(masterOverlay);
-            emulatorWindow.UpdateRect(null, null);
+            emulatorWindow.UpdateRect();
 
-            masterOverlay.Top = emulatorWindow.WindowRect.Top;
-            masterOverlay.Left = emulatorWindow.WindowRect.Left;
-            masterOverlay.Width = emulatorWindow.WindowRect.Right - emulatorWindow.WindowRect.Left;
-            masterOverlay.Height = emulatorWindow.WindowRect.Bottom - emulatorWindow.WindowRect.Top;
+            masterOverlay.Top = emulatorWindow.Rect.Top;
+            masterOverlay.Left = emulatorWindow.Rect.Left;
+            masterOverlay.Width = emulatorWindow.Rect.Width;
+            masterOverlay.Height = emulatorWindow.Rect.Height;
 
             var hwnd = new WindowInteropHelper(masterOverlay);
             hwnd.Owner = emulatorWindow.Handle;
@@ -115,10 +115,8 @@ namespace MomoiAssist.Services
             MakeWindowClickThrough(masterOverlay);
 
             slaveOverlay = new SampleOverlay();
-            //slaveOverlay.Top = emulatorWindow.Rect.Top;
-            slaveOverlay.Top = emulatorWindow.WindowRect.Bottom - 120 - 4;
-            //slaveOverlay.Left = emulatorWindow.Rect.Left+4;
-            slaveOverlay.Left = emulatorWindow.WindowRect.Right - 360 - 4;
+            slaveOverlay.Top = emulatorWindow.Rect.Bottom - 120;
+            slaveOverlay.Left = emulatorWindow.Rect.Left;
             slaveOverlay.Owner = masterOverlay;
             slaveOverlay.Show();
 
