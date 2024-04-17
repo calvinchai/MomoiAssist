@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0-windows10.0.22000.0</TargetFramework>
+    <TargetFramework>net7.0-windows10.0.22000.0</TargetFramework>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>wpfui-icon.ico</ApplicationIcon>
     <Nullable>enable</Nullable>
@@ -20,6 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Emgu.CV" Version="4.8.1.5350" />
+    <PackageReference Include="Emgu.CV.runtime.windows.cuda" Version="4.8.0.5324" />
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
     <PackageReference Include="GameOverlay.Net" Version="4.3.1" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.3" />

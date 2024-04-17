@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using MomoiAssist.Views.Pages;
+﻿using Microsoft.Extensions.Hosting;
 using MomoiAssist.Views.Windows;
 using Wpf.Ui;
 

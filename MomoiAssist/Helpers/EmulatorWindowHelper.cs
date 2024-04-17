@@ -1,101 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MomoiAssist.Helpers.PInvoke;
 using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Drawing.Imaging;
-using MomoiAssist.Models;
-using System.IO;
-using System.Windows.Media.Media3D;
-using System.Windows;
-using System.Security.Permissions;
-using System.Reflection.Metadata;
+using System.Text;
 
 namespace MomoiAssist.Helpers
 {
-    public struct RECT
-    {
-        public int Left;
-        public int Top;
-        public int Right;
-        public int Bottom;
-        public int Width => Right - Left;
-        public int Height => Bottom - Top;
-        public int X => Left;
-        public int Y => Top;
-        public Rectangle ToRectangle() => Rectangle.FromLTRB(Left, Top, Right, Bottom);
-        public Rectangle ToRectangleOffset(POINT p) => Rectangle.FromLTRB(Left + p.x, Top + p.y, Right + p.x, Bottom);
-    }
-
-    public struct POINT
-    {
-        public int x;
-        public int y;
-    }
 
     public class EmulatorWindowHelper
     {
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
-
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
-
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        static extern int GetWindowTextLength(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        static extern IntPtr GetWindowDC(IntPtr hWnd);
-
-        [DllImport("gdi32.dll")]
-        private static extern bool BitBlt(IntPtr hdcDest, int nXDest, int nYDest, int nWidth, int nHeight, IntPtr hdcSrc, int nXSrc, int nYSrc, uint dwRop);
-
-        [DllImport("user32.dll")]
-        private static extern bool ReleaseDC(IntPtr hWnd, IntPtr hDC);
-
-        [DllImport("user32.dll")]
-        public static extern bool GetWindowRect(IntPtr hWnd, out RECT rect);
-
-        [DllImport("user32.dll")]
-        public static extern bool PrintWindow(IntPtr hWnd, IntPtr hdcBlt, int nFlags);
-
-        [DllImport("user32.dll")]
-        public static extern bool ClientToScreen(IntPtr hWnd, out POINT point);
-
-
-       
-        [DllImport("user32.dll")]
-        private static extern IntPtr SetWinEventHook(
-        uint eventMin,
-        uint eventMax,
-        IntPtr hmodWinEventProc,
-        WinEventDelegate lpfnWinEventProc,
-        uint idProcess,
-        uint idThread,
-        uint dwFlags);
-
-        [DllImport("user32.dll")]
-        private static extern bool UnhookWinEvent(IntPtr hWinEventHook);
-
-        private const uint EVENT_SYSTEM_FOREGROUND = 3;
-        private const uint EVENT_OBJECT_DESTROY = 0x8000;
-        private const uint WINEVENT_OUTOFCONTEXT = 0;
-
-        private delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType,
-        IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
-
-        delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
-
-        private static IntPtr winEventHook;
-        private const int SRCCOPY = 0x00CC0020;
-
 
         public static string GetWindowName(IntPtr hWnd)
         {
-            int length = GetWindowTextLength(hWnd);
+            int length = User32.GetWindowTextLength(hWnd);
             StringBuilder windowText = new StringBuilder(length + 1);
-            GetWindowText(hWnd, windowText, windowText.Capacity);
+            User32.GetWindowText(hWnd, windowText, windowText.Capacity);
             return windowText.ToString();
         }
 
@@ -104,14 +22,14 @@ namespace MomoiAssist.Helpers
         {
             IntPtr foundWindow = IntPtr.Zero;
 
-            EnumWindows((hWnd, lParam) =>
+            User32.EnumWindows((hWnd, lParam) =>
             {
                 if (GetWindowName(hWnd).Contains(title))
                 {
                     foundWindow = hWnd;
-                    return false; 
+                    return false;
                 }
-                return true; 
+                return true;
             }, IntPtr.Zero);
 
             return foundWindow;
@@ -121,10 +39,10 @@ namespace MomoiAssist.Helpers
         {
             List<IntPtr> windows = new List<IntPtr>();
 
-            EnumWindows((hWnd, lParam) =>
+            User32.EnumWindows((hWnd, lParam) =>
             {
                 windows.Add(hWnd);
-                return true; 
+                return true;
             }, IntPtr.Zero);
 
             return windows;
@@ -134,10 +52,10 @@ namespace MomoiAssist.Helpers
         {
             List<String> windows = new List<String>();
 
-            EnumWindows((hWnd, lParam) =>
+            User32.EnumWindows((hWnd, lParam) =>
             {
                 windows.Add(GetWindowName(hWnd));
-                return true; 
+                return true;
             }, IntPtr.Zero);
 
             return windows;
@@ -145,14 +63,14 @@ namespace MomoiAssist.Helpers
 
         public static Bitmap CaptureWindowPrintWindow(IntPtr hWnd)
         {
-            GetWindowRect(hWnd, out RECT rc);
-            Console.WriteLine("Screen Capture with PrintWindow: " + rc.Left + " " + rc.Top + " " +rc.Right + " " + rc.Bottom);
+            User32.GetWindowRect(hWnd, out RECT rc);
+            Console.WriteLine("Screen Capture with PrintWindow: " + rc.Left + " " + rc.Top + " " + rc.Right + " " + rc.Bottom);
             Console.WriteLine("Width: " + rc.Width + " Height: " + rc.Height);
             Bitmap bmp = new Bitmap(rc.Width, rc.Height, PixelFormat.Format24bppRgb);
             Graphics gfxBmp = Graphics.FromImage(bmp);
             IntPtr hdcBitmap = gfxBmp.GetHdc();
 
-            PrintWindow(hWnd, hdcBitmap, 0);
+            User32.PrintWindow(hWnd, hdcBitmap, 0);
 
             gfxBmp.ReleaseHdc(hdcBitmap);
             gfxBmp.Dispose();
@@ -160,60 +78,74 @@ namespace MomoiAssist.Helpers
             return bmp;
         }
 
-        public static Bitmap CaptureWindowGDI(IntPtr hWnd)
+        
+
+
+
+
+        public static Bitmap? CaptureWindowGDI(IntPtr hWnd)
         {
-            GetWindowRect(hWnd, out RECT rc);
-            ClientToScreen(hWnd, out POINT point);
-            int Width = rc.Width;
-            int Height = rc.Height;
-            //int titleBarHeight = (int)System.Windows.SystemParameters.CaptionHeight;
-            //Height -= rc.Top - point.y;
-            
-            IntPtr windowDC = GetWindowDC(hWnd);
-            //Console.WriteLine("Screen Capture with GDI: " + rc.Left + " " + rc.Top + " " + Width + " " + Height);
-            //Console.WriteLine("Boarder: " + (rc.Left-point.x) + " " + (rc.Top-point.y));
+            var windowRect = GetWindowRect(hWnd);
+            var clientRect = GetClientRect(hWnd);
+            int TopOffset = clientRect.Top - windowRect.Top;
+            int LeftOffset = clientRect.Left - windowRect.Left;
+            return CaptureWindowGDI(hWnd, LeftOffset, TopOffset, clientRect.Width, clientRect.Height);
+        }
 
-            if (Width <= 0 || Height <= 0)
-            {
-
+        const int SRCCOPY = 0x00CC0020;
+        public static Bitmap? CaptureWindowGDI(IntPtr hWnd, int nXsrc, int nYsrc, int nWidth, int nHeight)
+        {
+            IntPtr windowDC = User32.GetWindowDC(hWnd);
+            if (windowDC == IntPtr.Zero) 
+            { 
                 return null;
             }
-
-            Bitmap screenshot = new Bitmap(Width, Height, PixelFormat.Format24bppRgb);
+            if (nWidth <= 0 || nHeight <= 0)
+            {
+                return null;
+            }
+            Bitmap screenshot = new Bitmap(nWidth, nHeight, PixelFormat.Format24bppRgb);
             using (Graphics gfxScreenshot = Graphics.FromImage(screenshot))
             {
                 IntPtr gfxDC = gfxScreenshot.GetHdc();
-                BitBlt(gfxDC, 0, 0, Width, Height, windowDC, 0, 0, SRCCOPY);
-                //CopyPixelOperation.SourceCopy | CopyPixelOperation.CaptureBlt
+                Gdi32.BitBlt(gfxDC, 0, 0, nWidth, nHeight, windowDC, nXsrc, nYsrc, SRCCOPY);
                 gfxScreenshot.ReleaseHdc(gfxDC);
             }
 
-            ReleaseDC(hWnd, windowDC);
+            User32.ReleaseDC(hWnd, windowDC);
 
             return screenshot;
         }
 
+
         public static Bitmap CaptureWindowCopyScreen(IntPtr hWnd)
         {
-            GetWindowRect(hWnd, out RECT rc);
+            User32.GetWindowRect(hWnd, out RECT rc);
 
-            Console.WriteLine("Screen Capture with CopyFromScreen: " + rc.Top + " " + rc.Left + " " + rc.Width + " " + rc.Height);
             Bitmap bitmap = new Bitmap(rc.Width, rc.Height);
             Graphics g = Graphics.FromImage(bitmap);
 
             g.CopyFromScreen(rc.X, rc.Y, 0, 0, new System.Drawing.Size(rc.Width, rc.Height));
 
-            //MemoryStream memoryStream = new MemoryStream();
-            //bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
 
             return bitmap;
         }
 
-        public static RECT GetWindowRect(IntPtr hWnd)
+        public static Rectangle GetWindowRect(IntPtr hWnd)
         {
-            RECT rect;
-            GetWindowRect(hWnd, out rect);
-            return rect;
+            User32.GetWindowRect(hWnd, out RECT rect);
+            return rect.ToRectangle();
+        }
+
+        public static Rectangle GetClientRect(IntPtr hWnd, int TopOffset = 35)
+        {
+            User32.GetWindowRect(hWnd, out RECT rect);
+            User32.ClientToScreen(hWnd, out POINT point);
+            int Top = TopOffset + point.Y;
+            int Left = point.X;
+            int Width = rect.Width - 2 * (point.X- rect.Left);
+            int Height = rect.Height - (point.X-rect.Left) - (point.Y - rect.Top) - TopOffset;
+            return new Rectangle(Left, Top, Width, Height);
         }
 
     }

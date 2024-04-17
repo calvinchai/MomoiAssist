@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MomoiAssist.Helpers;
+using MomoiAssist.Helpers.PInvoke;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Interop;
 using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
-using System.Windows.Threading;
-using MomoiAssist.Helpers;
-using Wpf.Ui.Controls;
 
 namespace MomoiAssist.Models
 {
@@ -18,8 +10,8 @@ namespace MomoiAssist.Models
     {
         public string Title { get; set; }
         public nint Handle { get; set; }
+        public RECT WindowRect { get; set; }
         public RECT Rect { get; set; }
-
 
         public Bitmap? Screenshot = null;
         public BitmapImage? ScreenshotImage = null;
@@ -28,34 +20,32 @@ namespace MomoiAssist.Models
         {
             Title = title;
             Handle = handle;
-            StartScreenshotUpdateTimer();
-            StartRectUpdateTimer();
-            //Task.Run(() =>
-            //{
-            //    while (true)
-            //    {
-            //        UpdateScreenshot();
-            //    }
-            //});
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    UpdateScreenshot();
+                }
+            });
         }
-        private DispatcherTimer screenshotUpdateTimer = new DispatcherTimer();
-        private DispatcherTimer rectUpdateTimer = new DispatcherTimer();
 
-        private void StartScreenshotUpdateTimer()
-        {
-            screenshotUpdateTimer.Interval = TimeSpan.FromSeconds(1/30); 
-            screenshotUpdateTimer.Tick += UpdateScreenshot;
-            screenshotUpdateTimer.Start();
 
-        }
-        private void StartRectUpdateTimer()
+        public void UpdateRect(object sender, EventArgs e)
         {
-            rectUpdateTimer.Tick += UpdateRect;
-            rectUpdateTimer.Start();
-        }
-        void UpdateRect(object sender, EventArgs e)
-        {
-            Rect = EmulatorWindowHelper.GetWindowRect(Handle);
+            User32.GetWindowRect(Handle, out RECT WindowRect);
+            this.WindowRect = WindowRect;
+
+            User32.ClientToScreen(Handle, out POINT point);
+            var horizontal_offset = point.X - WindowRect.Left;
+            var vertical_offset = point.Y - WindowRect.Top;
+            Rect = new RECT
+            {
+                Left = WindowRect.Left + horizontal_offset,
+                Top = WindowRect.Top + vertical_offset,
+                Right = WindowRect.Right - horizontal_offset,
+                Bottom = WindowRect.Bottom - horizontal_offset
+            };
+
         }
 
 
@@ -66,11 +56,7 @@ namespace MomoiAssist.Models
         public void UpdateScreenshot()
         {
             Screenshot = EmulatorWindowHelper.CaptureWindowGDI(Handle);
-            //if (Screenshot != null)
-            //{
-            //    Screenshot.Save(Title+".png", System.Drawing.Imaging.ImageFormat.Png);
 
-            //}
             UpdateScreenshotImage();
             if (lastTime == 0)
             {
@@ -83,7 +69,7 @@ namespace MomoiAssist.Models
                 {
                     return;
                 }
-                Console.WriteLine("FPS: " + 1000 / (currentTime - lastTime));
+                //Console.WriteLine("FPS: " + 1000 / (currentTime - lastTime));
                 lastTime = currentTime;
             }
         }
@@ -92,7 +78,7 @@ namespace MomoiAssist.Models
         public void UpdateScreenshotImage()
         {
             ScreenshotImage = BitmapToImageSource(Screenshot);
-            
+
         }
 
 

@@ -9,7 +9,6 @@ namespace MomoiAssist.Views.Windows
     public partial class MainWindow : INavigationWindow
     {
         public MainWindowViewModel ViewModel { get; }
-
         public MainWindow(
             MainWindowViewModel viewModel,
             IPageService pageService,

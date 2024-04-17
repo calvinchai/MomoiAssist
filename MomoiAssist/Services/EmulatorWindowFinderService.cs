@@ -1,25 +1,44 @@
-﻿using MomoiAssist.Helpers;
+﻿using Microsoft.Extensions.Hosting;
+using MomoiAssist.Helpers;
 using MomoiAssist.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace MomoiAssist.Services
 {
 
-    public class WindowFinderService
+    public class EmulatorWindowFinderService : IHostedService
     {
-        private readonly IServiceProvider _serviceProvider;
-        public WindowFinderService(IServiceProvider serviceProvider)
+        private EmulatorWindow? emulatorWindow = null;
+        public EmulatorWindow? CurrentWindow => emulatorWindow;
+        public EmulatorWindow? EmulatorWindow
         {
-            _serviceProvider = serviceProvider;
-            StartWindowUpdateTimer();
+            get
+            {
+                if (emulatorWindow == null)
+                {
+                    emulatorWindow = GetPossibleEmulatorWindows().FirstOrDefault();
+                }
+
+                return emulatorWindow;
+
+            }
+            set
+            {
+                if (value is EmulatorWindow window)
+                {
+                    emulatorWindow = window;
+                }
+
+
+            }
         }
 
-        private EmulatorWindow? emulatorWindow = null;
+        private OverlayService overlayService;
+
+        public EmulatorWindowFinderService(OverlayService overlayService)
+        {
+            this.overlayService = overlayService;
+        }
 
         public void ClearEmulatorWindow()
         {
@@ -44,11 +63,12 @@ namespace MomoiAssist.Services
             emulatorWindow = GetPossibleEmulatorWindows().FirstOrDefault();
             if (emulatorWindow != null)
             {
+                overlayService.StartOverlay(emulatorWindow);
                 //emulatorWindow.UpdateScreenshot();
             }
         }
 
-        private readonly List<string> possibleEmulatorNames = new List<string> {"MuMu Player 12", "MuMu"};
+        private readonly List<string> possibleEmulatorNames = new List<string> { "MuMu Player 12", "MuMu" };
 
 
         // list 3 possible emulator window at most
@@ -79,7 +99,7 @@ namespace MomoiAssist.Services
             if (emulatorWindow == null)
             {
                 emulatorWindow = GetPossibleEmulatorWindows().FirstOrDefault();
-                
+
             }
             if (emulatorWindow != null)
             {
@@ -98,7 +118,18 @@ namespace MomoiAssist.Services
             emulatorWindow = new EmulatorWindow(EmulatorWindowHelper.GetWindowName(handle), handle);
         }
 
-        public EmulatorWindow? CurrentWindow => emulatorWindow;
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            StartWindowUpdateTimer();
+            return Task.CompletedTask;
+
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
 
 
     }

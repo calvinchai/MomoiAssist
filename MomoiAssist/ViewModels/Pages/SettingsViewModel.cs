@@ -1,25 +1,19 @@
 ﻿using MomoiAssist.Properties;
 using MomoiAssist.Services;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.Reflection.Metadata;
-using System.Windows.Data;
 using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
-using MomoiAssist;
 
 namespace MomoiAssist.ViewModels.Pages
 {
     enum Theme
     {
         FollowSystem,
-        
+
         Dark,
 
         Light,
     }
-    
+
     public partial class SettingsViewModel : ObservableObject, INavigationAware
     {
         public Array Themes
@@ -29,7 +23,7 @@ namespace MomoiAssist.ViewModels.Pages
                 return Enum.GetValues(typeof(Theme));
             }
         }
-        
+
         public SettingsViewModel(LocalizationService localizationService)
         {
             _localizationService = localizationService;
@@ -83,7 +77,7 @@ namespace MomoiAssist.ViewModels.Pages
             return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString()
                 ?? String.Empty;
         }
-        
+
 
     }
 }

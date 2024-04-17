@@ -1,18 +1,9 @@
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Windows.Media;
+using MomoiAssist.Models;
+using MomoiAssist.Services;
+using MomoiAssist.Views.Overlays;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using MomoiAssist.Helpers;
-using MomoiAssist.Models;
-using MomoiAssist.Properties;
-using MomoiAssist.Services;
-using MomoiAssist.Views.Windows;
 using Wpf.Ui;
-using Wpf.Ui.Controls;
 
 namespace MomoiAssist.ViewModels.Pages
 {
@@ -25,38 +16,50 @@ namespace MomoiAssist.ViewModels.Pages
         BitmapImage? screenshot = null;
 
         [RelayCommand]
-        private void OnCounterIncrement() {
+        private void OnCounterIncrement()
+        {
             //UpdateWindow();
 
             //Task.Run(UpdateDurationDisplay);
             Task.Run(StartOverlay);
-
+            //App.GetService<Overlay>().Show();
+            overlay = new Overlay();
+            overlay.Show();
         }
-
+        Overlay overlay;
         void StartOverlay()
         {
             using (var example = new Example(currentWindow.Handle))
             {
                 example.Run();
             }
+
+
+            //App.GetService<Overlay>().Hide();
+
         }
-        public DashboardViewModel(LocalizationService localizationService, WindowFinderService windowFinderService, ISnackbarService snackbarService)
+
+
+        public DashboardViewModel(LocalizationService localizationService, EmulatorWindowFinderService windowFinderService, ISnackbarService snackbarService)
         {
             _localizationService = localizationService;
             _windowFinderService = windowFinderService;
             _snackbarService = snackbarService;
             StartImageUpdateTimer();
+
         }
 
         private ISnackbarService _snackbarService;
         private LocalizationService _localizationService;
-        private WindowFinderService _windowFinderService;
+        private EmulatorWindowFinderService _windowFinderService;
 
-        public async void UpdateDurationDisplay() {
+        public async void UpdateDurationDisplay()
+        {
 
             ImageRecognizer imageRecognizer = new ImageRecognizer();
 
-            while (true) {
+            while (true)
+            {
                 String text = await imageRecognizer.RecognizeTextAsync();
 
                 if (ImageRecognizer.IsValidDurationFormat(text))
@@ -72,7 +75,7 @@ namespace MomoiAssist.ViewModels.Pages
         private void StartImageUpdateTimer()
         {
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(1); 
+            timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += UpdateWindow;
             timer.Start();
         }

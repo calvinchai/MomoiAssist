@@ -1,15 +1,10 @@
-﻿using MomoiAssist.Properties;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.Extensions.Hosting;
+using MomoiAssist.Properties;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Wpf.Ui;
 
 namespace MomoiAssist.Services
 {
-    public class LocalizationService
+    public class LocalizationService : IHostedService
     {
         private readonly IServiceProvider _serviceProvider;
 
@@ -18,19 +13,8 @@ namespace MomoiAssist.Services
         public LocalizationService(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            
-            Console.WriteLine($"User language: {locale}");
-            if (string.IsNullOrEmpty(locale))
-            {
-                SetSystemLanguage();
-            }
-            else
-            {
-                SetLanguage(locale);
-            }
-
         }
-            
+
         private bool IsSupportedLanguage(string language)
         {
             return language == "en" || language == "ja-JP" || language == "zh-CN";
@@ -70,5 +54,24 @@ namespace MomoiAssist.Services
             return locale;
         }
 
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            Console.WriteLine($"User language: {locale}");
+            if (string.IsNullOrEmpty(locale))
+            {
+                SetSystemLanguage();
+            }
+            else
+            {
+                SetLanguage(locale);
+            }
+            return Task.CompletedTask;
+
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

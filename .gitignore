@@ -41,3 +41,5 @@ obj/
 
 # Ignore Configuration files (you may want to ignore only specific config files)
 *.config
+
+.idea/

@@ -1,14 +1,17 @@
-﻿<Window x:Class="MomoiAssist.Views.Windows.Overlay"
+﻿<Window x:Class="MomoiAssist.Views.Overlays.Overlay"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MomoiAssist.Views.Windows"
+        xmlns:local="clr-namespace:MomoiAssist.Views.Overlays"
         mc:Ignorable="d"
-        Title="Overlay" Height="450" Width="800"
+        Title="Overlay"
         Background="Transparent"
         AllowsTransparency="True"
-        WindowStyle="None">
+        WindowStyle="None"
+        ShowInTaskbar="False"
+        Topmost="True"
+        >
     
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0" ResizeBorderThickness="20"/>
@@ -18,19 +21,22 @@
     <Grid>
 
         <!--背景（Background）-->
-        <Border Margin="0" Background="White" CornerRadius="5">
+        <!--<Border Margin="0" Background="White" CornerRadius="5">
             <Border.Effect>
                 <DropShadowEffect Direction="0" ShadowDepth="0" BlurRadius="20" 
                                   Opacity="0.25" Color="#FF5B5B5B"></DropShadowEffect>
             </Border.Effect>
-        </Border>
+        </Border>-->
 
         <!--拖拽窗口的区域（Border：For dragging windows）-->
-        <Border Name="TopBorder" Width="780" Height="100"
+        <!--<Border Name="TopBorder" Width="780" Height="100"
                 VerticalAlignment="Top" Margin="0,10,0,0"
                 Background="White" Opacity="0" Cursor="Hand"
                 
-                MouseLeftButtonDown="TopBorder_OnMouseLeftButtonDown"/>
+                MouseLeftButtonDown="TopBorder_OnMouseLeftButtonDown"/>-->
+        
+        
+        
         <TextBlock Name="Title" Text="Title" FontSize="20" Foreground="Black" 
                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
     </Grid>

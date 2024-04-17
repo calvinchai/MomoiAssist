@@ -10,7 +10,6 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Threading;
 using Wpf.Ui;
-using Wpf.Ui.Controls;
 
 namespace MomoiAssist
 {
@@ -32,7 +31,15 @@ namespace MomoiAssist
                 services.AddHostedService<ApplicationHostService>();
 
                 services.AddSingleton<LocalizationService>();
-                services.AddSingleton<WindowFinderService>();
+                services.AddSingleton<OverlayService>();
+                services.AddSingleton<EmulatorWindowFinderService>();
+
+                services.AddHostedService<LocalizationService>(provider =>
+                    provider.GetRequiredService<LocalizationService>());
+                services.AddHostedService<EmulatorWindowFinderService>(provider =>
+                    provider.GetRequiredService<EmulatorWindowFinderService>());
+                services.AddHostedService<OverlayService>(provider =>
+                    provider.GetRequiredService<OverlayService>());
 
                 services.AddSingleton<ISnackbarService, SnackbarService>();
                 // Page resolver service
@@ -47,6 +54,7 @@ namespace MomoiAssist
                 // Service containing navigation, same as INavigationWindow... but without window
                 services.AddSingleton<INavigationService, NavigationService>();
 
+
                 // Main window with navigation
                 services.AddSingleton<INavigationWindow, MainWindow>();
                 services.AddSingleton<MainWindowViewModel>();
@@ -54,13 +62,13 @@ namespace MomoiAssist
                 services.AddSingleton<MonitorWindow>();
                 services.AddSingleton<MonitorWindowViewModel>();
 
-
                 services.AddSingleton<DashboardPage>();
                 services.AddSingleton<DashboardViewModel>();
                 services.AddSingleton<DataPage>();
                 services.AddSingleton<DataViewModel>();
                 services.AddSingleton<SettingsPage>();
                 services.AddSingleton<SettingsViewModel>();
+
             }).Build();
 
         /// <summary>
@@ -79,11 +87,10 @@ namespace MomoiAssist
         /// </summary>
         private void OnStartup(object sender, StartupEventArgs e)
         {
-            
+
             _host.Start();
-            Overlay overlay = new Overlay();
-            overlay.Show();
-            GetService<MonitorWindow>().Show();
+            GetService<OverlayService>();
+            //GetService<MonitorWindow>().Show();
 
         }
 

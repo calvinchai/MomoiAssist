@@ -1,26 +1,20 @@
 ﻿using MomoiAssist.Models;
 using MomoiAssist.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Wpf.Ui;
 
 namespace MomoiAssist.ViewModels.Windows
 {
     public partial class MonitorWindowViewModel : ObservableObject
     {
 
-        private readonly WindowFinderService _windowFinderService;
+        private readonly EmulatorWindowFinderService _windowFinderService;
         [ObservableProperty]
         private string title = "Monitor Window";
 
         [ObservableProperty]
-        BitmapImage? screenshot=null;
-        public MonitorWindowViewModel(WindowFinderService windowFinderService)
+        BitmapImage? screenshot = null;
+        public MonitorWindowViewModel(EmulatorWindowFinderService windowFinderService)
         {
             _windowFinderService = windowFinderService;
             StartImageUpdateTimer();
@@ -59,8 +53,8 @@ namespace MomoiAssist.ViewModels.Windows
             {
                 //Screenshot = EmulatorWindow.BitmapToImageSource((System.Drawing.Bitmap?)currentWindow.Screenshot);
                 Screenshot = currentWindow.ScreenshotImage;
-                top = currentWindow.Rect.Top;
-                left = currentWindow.Rect.Left;
+                Top = currentWindow.WindowRect.Top;
+                Left = currentWindow.WindowRect.Left;
 
                 //Screenshot = null;
             }

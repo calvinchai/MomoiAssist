@@ -1,19 +1,10 @@
-﻿using GameOverlay.Windows;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using GameOverlay.Drawing;
+﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
+using System.Text;
 
 
 
-namespace MomoiAssist.Views.Windows
+namespace MomoiAssist.Views.Overlays
 {
 
     public class Example : IDisposable
@@ -31,7 +22,7 @@ namespace MomoiAssist.Views.Windows
         private long _lastRandomSet;
         private List<Action<Graphics, float, float>> _randomFigures;
 
-        public Example(IntPtr Parent)
+        public Example(nint Parent)
         {
             _brushes = new Dictionary<string, SolidBrush>();
             _fonts = new Dictionary<string, Font>();
@@ -50,11 +41,20 @@ namespace MomoiAssist.Views.Windows
                 IsTopmost = true,
                 IsVisible = true
             };
+            //_window = new GraphicsWindow()
+            //{
+            //    //FPS = 60,
+            //    //IsTopmost = true,
+            //    //IsVisible = true
+            //};
 
             _window.DestroyGraphics += _window_DestroyGraphics;
             _window.DrawGraphics += _window_DrawGraphics;
             _window.SetupGraphics += _window_SetupGraphics;
+
         }
+
+
 
         private void _window_SetupGraphics(object sender, SetupGraphicsEventArgs e)
         {
