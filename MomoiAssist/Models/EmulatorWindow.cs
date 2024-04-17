@@ -10,8 +10,9 @@ namespace MomoiAssist.Models
     {
         public string Title { get; set; }
         public nint Handle { get; set; }
-        public RECT WindowRect { get; set; }
-        public RECT Rect { get; set; }
+
+        public Rectangle WindowRect { get; set; }
+        public Rectangle Rect { get; set; }
 
         public Bitmap? Screenshot = null;
         public BitmapImage? ScreenshotImage = null;
@@ -20,6 +21,8 @@ namespace MomoiAssist.Models
         {
             Title = title;
             Handle = handle;
+            //TODO: Cancel this task when the window is closed
+            
             Task.Run(() =>
             {
                 while (true)
@@ -30,32 +33,18 @@ namespace MomoiAssist.Models
         }
 
 
-        public void UpdateRect(object sender, EventArgs e)
+        public void UpdateRect()
         {
-            User32.GetWindowRect(Handle, out RECT WindowRect);
-            this.WindowRect = WindowRect;
-
-            User32.ClientToScreen(Handle, out POINT point);
-            var horizontal_offset = point.X - WindowRect.Left;
-            var vertical_offset = point.Y - WindowRect.Top;
-            Rect = new RECT
-            {
-                Left = WindowRect.Left + horizontal_offset,
-                Top = WindowRect.Top + vertical_offset,
-                Right = WindowRect.Right - horizontal_offset,
-                Bottom = WindowRect.Bottom - horizontal_offset
-            };
-
+            WindowRect = EmulatorWindowHelper.GetWindowRect(Handle);
+            Rect=  EmulatorWindowHelper.GetClientRect(Handle);
         }
 
 
-        public void UpdateScreenshot(object sender, EventArgs e)
-        {
-            UpdateScreenshot();
-        }
+
         public void UpdateScreenshot()
         {
-            Screenshot = EmulatorWindowHelper.CaptureWindowGDI(Handle);
+            UpdateRect();
+            Screenshot = EmulatorWindowHelper.CaptureWindowGDI(Handle, Rect.Left-WindowRect.Left, Rect.Top-WindowRect.Top, Rect.Width, Rect.Height);
 
             UpdateScreenshotImage();
             if (lastTime == 0)

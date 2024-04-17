@@ -60,29 +60,6 @@ namespace MomoiAssist.Helpers
 
             return windows;
         }
-
-        public static Bitmap CaptureWindowPrintWindow(IntPtr hWnd)
-        {
-            User32.GetWindowRect(hWnd, out RECT rc);
-            Console.WriteLine("Screen Capture with PrintWindow: " + rc.Left + " " + rc.Top + " " + rc.Right + " " + rc.Bottom);
-            Console.WriteLine("Width: " + rc.Width + " Height: " + rc.Height);
-            Bitmap bmp = new Bitmap(rc.Width, rc.Height, PixelFormat.Format24bppRgb);
-            Graphics gfxBmp = Graphics.FromImage(bmp);
-            IntPtr hdcBitmap = gfxBmp.GetHdc();
-
-            User32.PrintWindow(hWnd, hdcBitmap, 0);
-
-            gfxBmp.ReleaseHdc(hdcBitmap);
-            gfxBmp.Dispose();
-
-            return bmp;
-        }
-
-        
-
-
-
-
         public static Bitmap? CaptureWindowGDI(IntPtr hWnd)
         {
             var windowRect = GetWindowRect(hWnd);
@@ -96,8 +73,8 @@ namespace MomoiAssist.Helpers
         public static Bitmap? CaptureWindowGDI(IntPtr hWnd, int nXsrc, int nYsrc, int nWidth, int nHeight)
         {
             IntPtr windowDC = User32.GetWindowDC(hWnd);
-            if (windowDC == IntPtr.Zero) 
-            { 
+            if (windowDC == IntPtr.Zero)
+            {
                 return null;
             }
             if (nWidth <= 0 || nHeight <= 0)
@@ -118,6 +95,25 @@ namespace MomoiAssist.Helpers
         }
 
 
+        public static Bitmap CaptureWindowPrintWindow(IntPtr hWnd)
+        {
+            User32.GetWindowRect(hWnd, out RECT rc);
+            Console.WriteLine("Screen Capture with PrintWindow: " + rc.Left + " " + rc.Top + " " + rc.Right + " " + rc.Bottom);
+            Console.WriteLine("Width: " + rc.Width + " Height: " + rc.Height);
+            Bitmap bmp = new Bitmap(rc.Width, rc.Height, PixelFormat.Format24bppRgb);
+            Graphics gfxBmp = Graphics.FromImage(bmp);
+            IntPtr hdcBitmap = gfxBmp.GetHdc();
+
+            User32.PrintWindow(hWnd, hdcBitmap, 0);
+
+            gfxBmp.ReleaseHdc(hdcBitmap);
+            gfxBmp.Dispose();
+
+            return bmp;
+        }
+
+        
+
         public static Bitmap CaptureWindowCopyScreen(IntPtr hWnd)
         {
             User32.GetWindowRect(hWnd, out RECT rc);
@@ -137,7 +133,7 @@ namespace MomoiAssist.Helpers
             return rect.ToRectangle();
         }
 
-        public static Rectangle GetClientRect(IntPtr hWnd, int TopOffset = 35)
+        public static Rectangle GetClientRect(IntPtr hWnd, int TopOffset = 0)
         {
             User32.GetWindowRect(hWnd, out RECT rect);
             User32.ClientToScreen(hWnd, out POINT point);
